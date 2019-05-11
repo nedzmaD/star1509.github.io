@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>Breaking Bricks Game</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body onload="draw()">
+		<canvas id="myCanvas" width="480" height="320"></canvas>
+		<center>
+		<h2 id="scoreTxt" >Score:</h3></center>
+		<script>
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		var ballRadius = 10;
+		var x = canvas.width/2;
+		var y = canvas.height-30;
+		var dx = 2;
+		var dy = -3;
+		var stickHeight = 10;
+		var stickWidth = 75;
+		var stickX = (canvas.width-stickWidth)/2;
+		var rightPressed = false;
+		var leftPressed = false;
+		var obstacleWidth=180;
+		var obstacleHeight=8;
+		var obstacleX=120;
+		var obstacleY=150;
+		var brickWidth=125;
+		var brickHeight=25;
+		var redX=35;
+		var blueX=175;
+		var greenX=315;
+		var redBlueGreenY=20;
+		var purpleX=110;
+		var yellowX=280;
+		var purpleYellowY=60;
+		var rStatus=1;
+		var bStatus=1;
+		var gStatus=1;
+		var pStatus=1;
+		var yStatus=1;
+		var score=0;
+		var ballColor="#74b9ff";
+		var bouncingSound = new Audio("bounce.wav");
+		var breakingSound = new Audio("break.wav");
+		var gameOverSound= new Audio ("gameover.wav");
+		var winningSound= new Audio ("winning.wav");
+		
+
+		document.addEventListener("keydown", keyDownHandler, false);
+		document.addEventListener("keyup", keyUpHandler, false);
+		function keyDownHandler(e) {
+		if(e.key == "Right" || e.key == "ArrowRight") {
+		rightPressed = true;
+		}
+		else if(e.key == "Left" || e.key == "ArrowLeft") {
+		leftPressed = true;
+		}
+		}
+		function keyUpHandler(e) {
+		if(e.key == "Right" || e.key == "ArrowRight") {
+		rightPressed = false;
+		}
+		else if(e.key == "Left" || e.key == "ArrowLeft") {
+		leftPressed = false;
+		}
+		}
+		
+		function collisionDetectionObstacle(){
+			if(x > obstacleX-ballRadius && x < obstacleX+obstacleWidth+ballRadius && y > obstacleY-ballRadius && y < obstacleY+obstacleHeight+ballRadius) {
+				dy=-dy;
+				bouncingSound.play();
+			}
+		}
+		function collisionDetectionRed() {
+			
+			if (rStatus==1){
+			if(x > redX-ballRadius && x < redX+brickWidth+ballRadius && y > redBlueGreenY-ballRadius && y < redBlueGreenY+brickHeight+ballRadius) {
+				dy=-dy;
+				rStatus=0;
+				ballColor="#FF0000";
+				score=score+20;
+				document.getElementById("scoreTxt").innerHTML = "Score: " + score;
+				breakingSound.play();
+			}
+			
+		}
+		}
+		function collisionDetectionBlue() {
+			if (bStatus==1) {
+			if(x > blueX-ballRadius && x < blueX+brickWidth+ballRadius && y > redBlueGreenY-ballRadius && y < redBlueGreenY+brickHeight+ballRadius) {
+				dy=-dy;
+				bStatus=0;
+				score=score+40;
+				ballColor="#0000FF";
+				document.getElementById("scoreTxt").innerHTML = "Score: " + score;
+				breakingSound.play();
+			}
+		}
+		}
+		function collisionDetectionGreen() {
+			if (gStatus==1) {
+			if(x > greenX-ballRadius && x < greenX+brickWidth+ballRadius && y > redBlueGreenY-ballRadius && y < redBlueGreenY+brickHeight+ballRadius) {
+				dy=-dy;
+				gStatus=0;
+				score=score+80;
+				ballColor="#228B22";
+				document.getElementById("scoreTxt").innerHTML = "Score: " + score;
+				breakingSound.play();
+			}
+		}
+		}
+		function collisionDetectionPurple () {
+			if (pStatus==1) {
+			if(x > purpleX-ballRadius && x < purpleX+brickWidth+ballRadius && y > purpleYellowY-ballRadius && y < purpleYellowY+brickHeight+ballRadius) {
+				dy=-dy;
+				pStatus=0;
+				score=score+60;
+				ballColor="#800080";
+				document.getElementById("scoreTxt").innerHTML = "Score: " + score;
+				breakingSound.play();
+			}
+		}
+		}
+		function collisionDetectionYellow () {
+			if (yStatus==1) {
+			if(x > yellowX-ballRadius && x < yellowX+brickWidth+ballRadius && y > purpleYellowY-ballRadius && y < purpleYellowY+brickHeight+ballRadius) {
+				dy=-dy;
+				yStatus=0;
+				score=score+50;
+				ballColor="#FFFF00";
+				document.getElementById("scoreTxt").innerHTML = "Score: " + score;
+				breakingSound.play();
+			}
+		}
+		}
+		function drawBall() {
+		ctx.beginPath();
+		ctx.arc(x, y, 10, 0, Math.PI*2);
+		ctx.fillStyle = ballColor;
+		ctx.fill();
+		ctx.closePath();
+		}
+		function drawStick() {
+		ctx.beginPath();
+		ctx.rect(stickX, canvas.height-stickHeight, stickWidth, stickHeight);
+		ctx.fillStyle = "#74b9ff";
+		ctx.fill();
+		ctx.closePath();
+		}
+		function drawRedBrick() {
+			if (rStatus==1) {
+		ctx.beginPath();
+		ctx.rect(redX, redBlueGreenY, brickWidth, brickHeight);
+		ctx.fillStyle = "#FF0000";
+		ctx.fill();
+		ctx.closePath();
+		}
+		}
+		function drawBlueBrick() {
+			if (bStatus==1) {
+		ctx.beginPath();
+		ctx.rect(blueX, redBlueGreenY, brickWidth, brickHeight);
+		ctx.fillStyle = "#0000FF";
+		ctx.fill();
+		ctx.closePath();
+		}
+		}
+		function drawGreenBrick() {
+			if (gStatus==1) {
+		ctx.beginPath();
+		ctx.rect(greenX, redBlueGreenY, brickWidth, brickHeight);
+		ctx.fillStyle = "#228B22";
+		ctx.fill();
+		ctx.closePath();
+		}
+		}
+		function drawPurpleBrick() {
+			if (pStatus==1) {
+		ctx.beginPath();
+		ctx.rect(purpleX, purpleYellowY, brickWidth, brickHeight);
+		ctx.fillStyle = "#800080";
+		ctx.fill();
+		ctx.closePath();
+		}
+		}
+		function drawYellowBrick() {
+			if (yStatus==1) {
+		ctx.beginPath();
+		ctx.rect(yellowX, purpleYellowY, brickWidth, brickHeight);
+		ctx.fillStyle = "#FFFF00";
+		ctx.fill();
+		ctx.closePath();
+		}
+		}
+		function drawObstacle() {
+		ctx.beginPath();
+		ctx.rect(obstacleX, obstacleY, obstacleWidth, obstacleHeight);
+		ctx.fillStyle = "#000000";
+		ctx.fill();
+		ctx.closePath();
+		}
+		
+		function draw() {
+			if(score == 250) {	
+			winningSound.play();	
+		alert("CONGRATULATIONS!");
+		document.location.reload();
+		clearInterval(interval); 
+		
+		}
+		
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		drawBall();
+		drawStick();
+		drawRedBrick();
+		drawGreenBrick();
+		drawBlueBrick();
+		drawPurpleBrick();
+		drawYellowBrick();
+		drawObstacle();
+		collisionDetectionObstacle();
+		collisionDetectionRed();
+		collisionDetectionBlue();
+		collisionDetectionGreen();
+		collisionDetectionPurple();
+		collisionDetectionYellow();
+		
+		if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+		dx = -dx;
+		
+		}
+		if(y + dy < ballRadius) {
+		dy = -dy;
+		
+		}
+		else if(y + dy > canvas.height-ballRadius) {
+		if(x > stickX-ballRadius && x < stickX + stickWidth+ballRadius) {
+		dy = -dy;
+		bouncingSound.play();
+		}
+		else {
+			gameOverSound.play();
+		alert("GAME OVER.YOUR SCORE IS: "+score);
+
+		document.location.reload();
+		clearInterval(interval); // Needed for Chrome to end game
+		}
+		}
+		
+		if(rightPressed && stickX < canvas.width-stickWidth) {
+		stickX += 5;
+		}
+		else if(leftPressed && stickX > 0) {
+		stickX -= 5;
+		}
+		
+		x += dx;
+		y += dy;
+		}
+		var interval = setInterval(draw, 13);
+		</script>
+	</body>
+</html>
